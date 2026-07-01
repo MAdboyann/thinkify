@@ -4,7 +4,6 @@ metadata:
   name: thinkify-ingress
   namespace: thinkify
   annotations:
-    # For nginx ingress controller
     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
 spec:
@@ -17,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: server
+                name: server-service
                 port:
                   number: 3000
           # /* → React frontend (nginx inside client handles SPA fallback)
