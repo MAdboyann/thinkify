@@ -19,10 +19,12 @@ app.use(
         origin: [
             "http://localhost:5173",
             "https://thinkify.vercel.app",
+            "http://51.20.77.21",
         ],
         credentials: true,
     })
 );
+
 databaseConnection(DATABASE_URL, DATABASE_NAME);
 app.use(express.json());
 app.use(cookieParser());

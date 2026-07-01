@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo:7
+    container_name: thinkify-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - thinkify-net
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: thinkify-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: mongodb://mongodb:27017/
+      DATABASE_NAME: thinkify
+      BCRYPT_GEN_SALT_NUMBER: 10
+      JWT_SECRET_KEY: thinkify_super_secret_jwt_key_2024
+      COOKIE_EXPIRES: 5d
+      COOKIE_KEY: thinkify
+      UPLOAD_DIRECTORY: uploads
+      CLIENT_ORIGIN: http://51.20.77.21
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - thinkify-net
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        VITE_SERVER_ENDPOINT: http://51.20.77.21/api
+        VITE_TOKEN_KEY: thinkify
+        VITE_USER_ROLE: role
+        VITE_COOKIE_EXPIRES: 1
+    container_name: thinkify-client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - thinkify-net
+
+volumes:
+  mongo_data:
+  uploads_data:
+
+networks:
+  thinkify-net:
+    driver: bridge
