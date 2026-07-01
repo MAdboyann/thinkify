@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thinkify-config
+  namespace: thinkify
+data:
+  PORT: "3000"
+  DATABASE_NAME: "thinkify"
+  BCRYPT_GEN_SALT_NUMBER: "10"
+  COOKIE_EXPIRES: "5d"
+  COOKIE_KEY: "thinkify"
+  UPLOAD_DIRECTORY: "uploads"
+  CLIENT_ORIGIN: "http://51.20.77.21"

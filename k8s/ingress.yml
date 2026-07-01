@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: thinkify-ingress
+  namespace: thinkify
+  annotations:
+    # For nginx ingress controller
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+spec:
+  ingressClassName: nginx   # change to "traefik" if using k3s default
+  rules:
+    - http:
+        paths:
+          # /api/* → Express backend directly (no rewrite needed, server handles /api prefix)
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 3000
+          # /* → React frontend (nginx inside client handles SPA fallback)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client
+                port:
+                  number: 80
